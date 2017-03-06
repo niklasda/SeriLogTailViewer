@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -50,7 +51,15 @@ namespace SeriLogTail.ViewModel
 
                 do
                 {
-                    IEnumerable<T> logEntries = cn.Query<T>("SELECT TOP 50 * FROM Logs WHERE Id > @lastId ORDER BY Id ASC", new { lastId});
+                    IEnumerable<T> logEntries;
+                    if (lastId==0)
+                    {
+                        logEntries = cn.Query<T>("SELECT TOP 50 * FROM Logs ORDER BY Id DESC", new { lastId }).OrderBy(x=>x.Id);
+                    }
+                    else
+                    {
+                        logEntries = cn.Query<T>("SELECT TOP 50 * FROM Logs WHERE Id > @lastId ORDER BY Id ASC", new { lastId});
+                    }
 
                     foreach (T l in logEntries)
                     {
