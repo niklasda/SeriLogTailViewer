@@ -1,0 +1,26 @@
+﻿<Window x:Class="SeriLogTail.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SeriLogTail"
+        DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
+        xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
+        mc:Ignorable="d"
+        Title="SeriLogTail" Height="640" Width="1024">
+    <Grid>
+        <xcdg:DataGridControl AutoCreateColumns="True" ReadOnly="True" ItemsSource="{Binding TheLog, Mode=OneWay}"  >
+
+            <xcdg:DataGridControl.View>
+                <xcdg:TableView  ColumnStretchMode="Last" IsColumnVirtualizationEnabled="False" ShowRowSelectorPane="False" UseDefaultHeadersFooters="False" >
+                    <xcdg:TableView.FixedHeaders>
+                        <DataTemplate>
+                            <xcdg:ColumnManagerRow AllowSort="False" AllowColumnReorder="False" />
+                        </DataTemplate>
+                    </xcdg:TableView.FixedHeaders>
+
+                </xcdg:TableView>
+            </xcdg:DataGridControl.View>
+        </xcdg:DataGridControl>
+    </Grid>
+</Window>
