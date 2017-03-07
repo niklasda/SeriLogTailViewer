@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reactive.Concurrency;
@@ -9,7 +10,7 @@ using Dapper;
 
 namespace SeriLogTail.ViewModel
 {
-    public class StreamEventArgs<T> : EventArgs where T : SeriLogEntryModel
+    public class StreamEventArgs<T> : EventArgs where T : SeriLogEntryModel, new()
     {
         public StreamEventArgs(T obj)
         {
@@ -19,9 +20,9 @@ namespace SeriLogTail.ViewModel
         public T Obj { get; private set; }
     }
 
-    public delegate void NewValueEventHandler<T>(object sender, StreamEventArgs<T> e) where T : SeriLogEntryModel;
+    public delegate void NewValueEventHandler<T>(object sender, StreamEventArgs<T> e) where T : SeriLogEntryModel, new();
 
-    public class ObservableTable<T> where T : SeriLogEntryModel
+    public class ObservableTable<T> where T : SeriLogEntryModel, new()
     {
         public ObservableTable(string connString, string tableName)
         {
@@ -45,22 +46,35 @@ namespace SeriLogTail.ViewModel
         {
             using (var cn = new SqlConnection(connString))
             {
-                cn.Open();
-
+                bool keepGoing = true;
                 int lastId = 0;
 
                 do
                 {
                     IEnumerable<T> logEntries;
-                    if (lastId==0)
+
+                    try
                     {
-                        string q = string.Format("SELECT TOP 50 * FROM {0} ORDER BY Id DESC", tableName);
-                        logEntries = cn.Query<T>(q, new { lastId }).OrderBy(x=>x.Id);
+                        if (cn.State != ConnectionState.Open)
+                        {
+                            cn.Open();
+                        }
+
+                        if (lastId == 0)
+                        {
+                            string q = string.Format("SELECT TOP 50 * FROM {0} ORDER BY Id DESC", tableName);
+                            logEntries = cn.Query<T>(q, new { lastId }).OrderBy(x => x.Id);
+                        }
+                        else
+                        {
+                            string q = string.Format("SELECT TOP 50 * FROM {0} WHERE Id > @lastId ORDER BY Id ASC", tableName);
+                            logEntries = cn.Query<T>(q, new { lastId });
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        string q = string.Format("SELECT TOP 50 * FROM {0} WHERE Id > @lastId ORDER BY Id ASC", tableName);
-                        logEntries = cn.Query<T>(q, new { lastId });
+                        logEntries = new List<T>() {new T() {Message = ex.Message} };
+                        keepGoing = false;
                     }
 
                     foreach (T l in logEntries)
@@ -72,7 +86,7 @@ namespace SeriLogTail.ViewModel
 
                     Task.Delay(1000).Wait();
 
-                } while (true);
+                } while (keepGoing);
             }
         }
     }
