@@ -15,6 +15,23 @@ namespace SeriLogTail.ViewModel
 
             var obsStream = new ObservableTable<SeriLogEntryModel>(connString);
             obsStream.NewValue += Strm_NewTransaction;
+
+            WindowTitle = connString;
+        }
+
+
+        private string _windowTitle;
+        public string WindowTitle
+        {
+            get { return _windowTitle; }
+            set
+            {
+                if (_windowTitle != value)
+                {
+                    _windowTitle = value;
+                    RaisePropertyChanged();
+                }
+            }
         }
 
         public ObservableCollection<SeriLogEntryModel> TheLog { get; private set; }

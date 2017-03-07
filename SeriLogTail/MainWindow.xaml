@@ -7,7 +7,7 @@
         DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
         xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
         mc:Ignorable="d"
-        Title="SeriLogTail" Height="640" Width="1024">
+        Title="{Binding WindowTitle}" Height="640" Width="1024">
     <Grid>
         <xcdg:DataGridControl AutoCreateColumns="True" ReadOnly="True" ItemsSource="{Binding TheLog, Mode=OneWay}"  >
 
