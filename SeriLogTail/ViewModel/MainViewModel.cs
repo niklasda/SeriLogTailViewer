@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight;
 using System.Configuration;
@@ -13,10 +14,14 @@ namespace SeriLogTail.ViewModel
 
             string connString = ConfigurationManager.ConnectionStrings["TheLogDatabase"].ConnectionString;
 
-            var obsStream = new ObservableTable<SeriLogEntryModel>(connString);
+            var len = connString.IndexOf(";P", StringComparison.CurrentCultureIgnoreCase);
+            len = len < 0 ? connString.Length : len;
+            
+            WindowTitle = "SeriLog DatabaseTable LogViewer - " + connString.Substring(0, len);
+
+            var obsStream = new ObservableTable<SeriLogEntryModel>(connString, "Logs");
             obsStream.NewValue += Strm_NewTransaction;
 
-            WindowTitle = connString;
         }
 
 

@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}" Height="640" Width="1024">
     <Grid>
-        <xcdg:DataGridControl AutoCreateColumns="True" ReadOnly="True" ItemsSource="{Binding TheLog, Mode=OneWay}"  >
+        <xcdg:DataGridControl AutoCreateColumns="false" ReadOnly="True" ItemsSource="{Binding TheLog, Mode=OneWay}"  >
 
             <xcdg:DataGridControl.View>
                 <xcdg:TableView  ColumnStretchMode="Last" IsColumnVirtualizationEnabled="False" ShowRowSelectorPane="False" UseDefaultHeadersFooters="False" >
@@ -21,6 +21,15 @@
 
                 </xcdg:TableView>
             </xcdg:DataGridControl.View>
+
+            <xcdg:DataGridControl.Columns>
+                <xcdg:Column FieldName="Id" Title="Id" Width="60"/>
+                <xcdg:Column FieldName="Level" Title="Level" Width="90" />
+                <xcdg:Column FieldName="Message" Title="Message" Width="450" />
+                <xcdg:Column FieldName="TimeStamp" Title="TimeStamp" />
+                <xcdg:Column FieldName="Exception" Title="Exception" />
+            </xcdg:DataGridControl.Columns>
+            
         </xcdg:DataGridControl>
     </Grid>
 </Window>

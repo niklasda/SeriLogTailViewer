@@ -23,9 +23,9 @@ namespace SeriLogTail.ViewModel
 
     public class ObservableTable<T> where T : SeriLogEntryModel
     {
-        public ObservableTable(string connString)
+        public ObservableTable(string connString, string tableName)
         {
-            var obs = GetObservable(connString);
+            var obs = GetObservable(connString, tableName);
             obs.Subscribe(x => OnChanged(new StreamEventArgs<T>(x)));
         }
 
@@ -36,12 +36,12 @@ namespace SeriLogTail.ViewModel
             NewValue?.Invoke(this, e);
         }
 
-        private IObservable<T> GetObservable(string connString)
+        private IObservable<T> GetObservable(string connString, string tableName)
         {
-            return ReadLines(connString).ToObservable(Scheduler.Default);
+            return ReadLines(connString, tableName).ToObservable(Scheduler.Default);
         }
 
-        private IEnumerable<T> ReadLines(string connString)
+        private IEnumerable<T> ReadLines(string connString, string tableName)
         {
             using (var cn = new SqlConnection(connString))
             {
@@ -54,11 +54,13 @@ namespace SeriLogTail.ViewModel
                     IEnumerable<T> logEntries;
                     if (lastId==0)
                     {
-                        logEntries = cn.Query<T>("SELECT TOP 50 * FROM Logs ORDER BY Id DESC", new { lastId }).OrderBy(x=>x.Id);
+                        string q = string.Format("SELECT TOP 50 * FROM {0} ORDER BY Id DESC", tableName);
+                        logEntries = cn.Query<T>(q, new { lastId }).OrderBy(x=>x.Id);
                     }
                     else
                     {
-                        logEntries = cn.Query<T>("SELECT TOP 50 * FROM Logs WHERE Id > @lastId ORDER BY Id ASC", new { lastId});
+                        string q = string.Format("SELECT TOP 50 * FROM {0} WHERE Id > @lastId ORDER BY Id ASC", tableName);
+                        logEntries = cn.Query<T>(q, new { lastId });
                     }
 
                     foreach (T l in logEntries)
