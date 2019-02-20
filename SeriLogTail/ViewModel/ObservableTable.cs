@@ -17,7 +17,7 @@ namespace SeriLogTail.ViewModel
             Obj = obj;
         }
 
-        public T Obj { get; private set; }
+        public T Obj { get; }
     }
 
     public delegate void NewValueEventHandler<T>(object sender, StreamEventArgs<T> e) where T : SeriLogEntryModel, new();
@@ -62,12 +62,12 @@ namespace SeriLogTail.ViewModel
 
                         if (lastId == 0)
                         {
-                            string q = string.Format("SELECT TOP 50 * FROM {0} ORDER BY Id DESC", tableName);
+                            string q = $"SELECT TOP 50 * FROM {tableName} ORDER BY Id DESC";
                             logEntries = cn.Query<T>(q, new { lastId }).OrderBy(x => x.Id);
                         }
                         else
                         {
-                            string q = string.Format("SELECT TOP 50 * FROM {0} WHERE Id > @lastId ORDER BY Id ASC", tableName);
+                            string q = $"SELECT TOP 50 * FROM {tableName} WHERE Id > @lastId ORDER BY Id ASC";
                             logEntries = cn.Query<T>(q, new { lastId });
                         }
                     }
