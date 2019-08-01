@@ -25,7 +25,7 @@
                 <xcdg:Column FieldName="Id" Title="Id" Width="60"/>
                 <xcdg:Column FieldName="Level" Title="Level" Width="90" />
                 <xcdg:Column FieldName="Message" Title="Message" Width="450" />
-                <xcdg:Column FieldName="TimeStamp" Title="TimeStamp" />
+                <xcdg:Column FieldName="TimeStampString" Title="TimeStamp" />
                 <xcdg:Column FieldName="Exception" Title="Exception" />
             </xcdg:DataGridControl.Columns>
             

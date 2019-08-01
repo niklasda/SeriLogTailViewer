@@ -63,17 +63,17 @@ namespace SeriLogTail.ViewModel
                         if (lastId == 0)
                         {
                             string q = $"SELECT TOP 50 * FROM {tableName} ORDER BY Id DESC";
-                            logEntries = cn.Query<T>(q, new { lastId }).OrderBy(x => x.Id);
+                            logEntries = cn.Query<T>(q, new { lastId }, commandTimeout:60).OrderBy(x => x.Id);
                         }
                         else
                         {
                             string q = $"SELECT TOP 50 * FROM {tableName} WHERE Id > @lastId ORDER BY Id ASC";
-                            logEntries = cn.Query<T>(q, new { lastId });
+                            logEntries = cn.Query<T>(q, new { lastId }, commandTimeout:60);
                         }
                     }
                     catch (Exception ex)
                     {
-                        logEntries = new List<T>() {new T() {Message = ex.Message} };
+                        logEntries = new List<T> {new T() {Message = ex.Message} };
                         keepGoing = false;
                     }
 

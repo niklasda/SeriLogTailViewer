@@ -21,7 +21,6 @@ namespace SeriLogTail.ViewModel
 
             var obsStream = new ObservableTable<SeriLogEntryModel>(connString, "Logs");
             obsStream.NewValue += Strm_NewTransaction;
-
         }
 
 
