@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("SeriLogTail")]
-[assembly: AssemblyCopyright("Copyright ©  2017-19")]
+[assembly: AssemblyCopyright("Copyright © nida 2017-19")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -20,14 +20,14 @@ namespace SeriLogTail.ViewModel
             WindowTitle = "SeriLog DatabaseTable LogViewer - " + connString.Substring(0, len);
 
             var obsStream = new ObservableTable<SeriLogEntryModel>(connString, "Logs");
-            obsStream.NewValue += Strm_NewTransaction;
+            obsStream.NewValue += Stream_NewTransaction;
         }
 
 
         private string _windowTitle;
         public string WindowTitle
         {
-            get { return _windowTitle; }
+            get => _windowTitle;
             set
             {
                 if (_windowTitle != value)
@@ -40,7 +40,7 @@ namespace SeriLogTail.ViewModel
 
         public ObservableCollection<SeriLogEntryModel> TheLog { get; private set; }
 
-        private void Strm_NewTransaction(object sender, StreamEventArgs<SeriLogEntryModel> e)
+        private void Stream_NewTransaction(object sender, StreamEventArgs<SeriLogEntryModel> e)
         {
             App.Current.Dispatcher.Invoke(() => TheLog.Insert(0, e.Obj));
             Debug.WriteLine(@"logId: {0}", e.Obj.Id);
