@@ -13,13 +13,17 @@ namespace SeriLogTail.ViewModel
             TheLog = new ObservableCollection<SeriLogEntryModel>();
 
             string connString = ConfigurationManager.ConnectionStrings["TheLogDatabase"].ConnectionString;
+            string table = ConfigurationManager.AppSettings["TheLogTable"];
+            string defaultTableName = "Logs";
+            string tableName = table ?? defaultTableName;
 
             var len = connString.IndexOf(";P", StringComparison.CurrentCultureIgnoreCase);
             len = len < 0 ? connString.Length : len;
-            
-            WindowTitle = "SeriLog DatabaseTable LogViewer - " + connString.Substring(0, len);
+            string safePart = connString.Substring(0, len);
 
-            var obsStream = new ObservableTable<SeriLogEntryModel>(connString, "Logs");
+            WindowTitle = $"SeriLogTableTailViewer - {tableName} - {safePart}";
+
+            var obsStream = new ObservableTable<SeriLogEntryModel>(connString, tableName);
             obsStream.NewValue += Stream_NewTransaction;
         }
 
